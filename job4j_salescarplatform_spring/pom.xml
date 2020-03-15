@@ -195,6 +195,7 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-beans</artifactId>
             <version>5.2.4.RELEASE</version>
+        </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.springframework/spring-webmvc -->
         <dependency>
@@ -218,12 +219,5 @@
             <scope>test</scope>
         </dependency>
 
-
-
     </dependencies>
-
-    <modules>
-        <module>salescarplatform_spring</module>
-    </modules>
-    
 </project>
