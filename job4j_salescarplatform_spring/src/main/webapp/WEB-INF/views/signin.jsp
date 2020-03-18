@@ -1,7 +1,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
 <head>
-    <title>Registration</title>
+    <title>Sign In</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
@@ -26,17 +26,18 @@
             } else {
                 var user = {
                     name: name,
-                    pass: pass
+                    password: pass
                 };
                 response(user);
             }
             return false;
         }
         function response(user) {
-            var url = "${pageContext.servletContext.contextPath}/registration";
+            var url = "${pageContext.servletContext.contextPath}/signin";
             $.ajax({
                 type: "POST",
                 url: url,
+                contentType: 'application/json',
                 data: JSON.stringify(user),
                 success: [function ($data) {
                     resultProcessing($data);
@@ -49,7 +50,7 @@
                 var url = "${pageContext.servletContext.contextPath}/login";
                 document.location.href = url;
             } else {
-                alert("The user with this name exists on the server. Please choose other name.");
+                alert("invalid credential");
                 document.dataForm.reset();
             }
         }
@@ -67,7 +68,7 @@
     </div>
     <div>
         <br>
-        <input type="submit" class="form-control" onclick="return validate();" value="Register">
+        <input type="submit" class="form-control" onclick="return validate();" value="Sign In">
     </div>
 </form>
 </body>

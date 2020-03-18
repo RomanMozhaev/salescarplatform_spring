@@ -1,4 +1,4 @@
-package ru.job4j.connector;
+package ru.job4j.persistent;
 
 import ru.job4j.models.Car;
 import ru.job4j.models.User;

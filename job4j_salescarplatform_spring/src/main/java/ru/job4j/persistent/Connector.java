@@ -1,47 +1,22 @@
-package ru.job4j.connector;
+package ru.job4j.persistent;
 
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
+import org.springframework.stereotype.Component;
 import ru.job4j.models.Car;
 import ru.job4j.models.User;
 
 import javax.persistence.*;
-import java.beans.PropertyEditorSupport;
-import java.net.UnknownServiceException;
 import java.util.*;
-import java.util.function.Function;
 
 /**
  * the class for connecting to Data Base.
  */
+@Component
 public class Connector implements ConnectionInterface {
-
     /**
      * the Entity Manager Factory
      */
     private final EntityManagerFactory emf = Persistence
             .createEntityManagerFactory("SaleCar");
-
-    /**
-     * the Instance of this class.
-     */
-    private static final Connector INSTANCE = new Connector();
-
-    /**
-     * the default constructor.
-     */
-    private Connector() {
-    }
-
-    /**
-     * the getter for singleton.
-     *
-     * @return the instance.
-     */
-    public static Connector getInstance() {
-        return INSTANCE;
-    }
 
     /**
      * adds the new user to the database.

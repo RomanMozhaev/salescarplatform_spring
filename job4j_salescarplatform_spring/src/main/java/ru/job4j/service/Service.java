@@ -1,7 +1,9 @@
-package ru.job4j.logic;
+package ru.job4j.service;
 
-import ru.job4j.connector.ConnectionInterface;
-import ru.job4j.connector.Connector;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import ru.job4j.persistent.ConnectionInterface;
+import ru.job4j.persistent.Connector;
 import ru.job4j.models.Car;
 import ru.job4j.models.User;
 
@@ -11,32 +13,17 @@ import java.util.List;
 /**
  * the class for preparing data for processing with data base.
  */
+@Component
 public class Service implements ServiceInterface {
-
-    /**
-     * the default constructor.
-     */
-    private Service() {
-
-    }
 
     /**
      * the connector to data base class instance.
      */
-    private final ConnectionInterface connector = Connector.getInstance();
+    private final ConnectionInterface connector;
 
-    /**
-     * the instance of the service class.
-     */
-    private static final Service INSTANCE = new Service();
-
-    /**
-     * the getter of the instance.
-     *
-     * @return the instance of the service class.
-     */
-    public static Service getInstance() {
-        return INSTANCE;
+    @Autowired
+    public Service(final ConnectionInterface connector) {
+        this.connector = connector;
     }
 
     /**
