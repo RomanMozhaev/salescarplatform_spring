@@ -55,11 +55,12 @@
                 url: url,
                 data: formData,
                 success: [function ($data) {
-                    user['picPath'] = $data['pic'];
+                    user['picPath'] = $data['status'];
                     response(user);
                 }],
                 contentType: false,
                 processData: false,
+                dataType: 'json',
             });
         }
 
@@ -68,6 +69,7 @@
             $.ajax({
                 type: "POST",
                 url: url,
+                contentType: 'application/json',
                 data: JSON.stringify(user),
                 success: [function ($data) {
                     resultProcessing($data);
@@ -130,10 +132,10 @@
         <table class="table">
             <tr>
                 <td>
-                    <input type="submit" class="form-control" onclick="return validate();" value="Add">
+                    <input type="button" class="form-control" onclick="validate();" value="Add">
                 </td>
                 <td>
-                    <input type="submit" class="form-control" onclick="return toCabinet();" value="return">
+                    <input type="button" class="form-control" onclick="toCabinet();" value="return">
                 </td>
             </tr>
         </table>

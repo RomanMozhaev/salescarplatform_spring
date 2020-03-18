@@ -1,42 +1,31 @@
-package ru.job4j.logic;
+package ru.job4j.service;
 
-import ru.job4j.connector.ConnectionInterface;
-import ru.job4j.connector.Connector;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import ru.job4j.persistent.ConnectionInterface;
 import ru.job4j.models.Car;
 import ru.job4j.models.User;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 /**
  * the class for preparing data for processing with data base.
  */
+@Component
 public class Service implements ServiceInterface {
-
-    /**
-     * the default constructor.
-     */
-    private Service() {
-
-    }
 
     /**
      * the connector to data base class instance.
      */
-    private final ConnectionInterface connector = Connector.getInstance();
+    private final ConnectionInterface connector;
 
-    /**
-     * the instance of the service class.
-     */
-    private static final Service INSTANCE = new Service();
-
-    /**
-     * the getter of the instance.
-     *
-     * @return the instance of the service class.
-     */
-    public static Service getInstance() {
-        return INSTANCE;
+    @Autowired
+    public Service(final ConnectionInterface connector) {
+        this.connector = connector;
     }
 
     /**
@@ -106,7 +95,7 @@ public class Service implements ServiceInterface {
      */
     @Override
     public boolean addCar(Car car) {
-        return this.connector.addCar(car) != -1;
+        return this.connector.addCar(car);
     }
 
     /**
@@ -130,7 +119,44 @@ public class Service implements ServiceInterface {
      */
     @Override
     public List<Car> filter(boolean day, boolean photo, String brand) {
-        return this.connector.filter(day, photo, brand);
+        List<Car> result;
+        if (day) {
+            Calendar now = new GregorianCalendar();
+            Calendar calendarDay = new GregorianCalendar(
+                    now.get(Calendar.YEAR),
+                    now.get(Calendar.MONTH),
+                    now.get(Calendar.DATE)
+            );
+            if (photo) {
+                if (!brand.equals("none")) {
+                    result = this.connector.filterCarsByBrandPicDay(brand, calendarDay);
+                } else {
+                    result = this.connector.filterCarsByPicDay(calendarDay);
+                }
+            } else {
+                if (!brand.equals("none")) {
+                    result = this.connector.filterCarsByBrandDay(brand, calendarDay);
+                } else {
+                    result = this.connector.filterCarsByDay(calendarDay);
+                }
+            }
+        } else {
+            if (photo) {
+                if (!brand.equals("none")) {
+                    result = this.connector.filterCarsByBrandPic(brand);
+                } else {
+                    result = this.connector.filterCarsByPic();
+                }
+            } else {
+                if (!brand.equals("none")) {
+                    result = this.connector.filterCarsByBrand(brand);
+                } else {
+                    result = this.connector.allCars();
+                }
+            }
+        }
+
+        return result;
     }
 
     /**

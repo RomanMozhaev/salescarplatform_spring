@@ -41,6 +41,7 @@
             $.ajax({
                 type: "POST",
                 url: url,
+                contentType: 'application/json',
                 success: [function ($data) {
                     if ($data['status'] === "valid") {
                         if (status) {

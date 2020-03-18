@@ -1,4 +1,4 @@
-package ru.job4j.logic;
+package ru.job4j.service;
 
 import ru.job4j.models.Car;
 import ru.job4j.models.User;

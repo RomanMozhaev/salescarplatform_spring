@@ -2,8 +2,8 @@ package ru.job4j.models;
 
 import javax.persistence.*;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -11,6 +11,19 @@ import java.util.Objects;
  */
 @Entity
 @Table(name = "car_tickets")
+@NamedQueries({
+        @NamedQuery(name = "allCars", query = "from Car"),
+        @NamedQuery(name = "Car_Brand", query = "from Car c where c.brand =:carBrand"),
+        @NamedQuery(name = "Car_Pic", query = "from Car c where c.picture != ''"),
+        @NamedQuery(name = "Car_Day", query = "from Car c where c.date >:day"),
+        @NamedQuery(name = "Car_BrandPic", query = "from Car c where c.brand =:carBrand and c.picture != ''"),
+        @NamedQuery(name = "Car_BrandDay", query = "from Car c where c.brand =:carBrand and c.date >:day"),
+        @NamedQuery(name = "Car_PicDay", query = "from Car c where c.picture != '' and c.date >:day"),
+        @NamedQuery(name = "Car_BrandPicDay", query = "from Car c where c.brand =:carBrand and c.picture != '' and c.date >:day"),
+        @NamedQuery(name = "allBrands", query = "select distinct c.brand From Car c"),
+        @NamedQuery(name = "CarsByUser", query = "From Car c where c.user.id = :userId"),
+        @NamedQuery(name = "CarById", query = "From Car c where c.id = :carId")
+})
 public class Car {
     /**
      * unique id.
@@ -90,6 +103,27 @@ public class Car {
         this.date = new GregorianCalendar();
         this.sold = false;
         this.user = null;
+    }
+
+    public Car(Map<String, Object> carFields) {
+        if (carFields.size() == 8) {
+            this.type = (String) carFields.get("type");
+            this.brand = (String) carFields.get("brand");
+            this.model = (String) carFields.get("model");
+            this.usage = Integer.parseInt((String) carFields.get("usage"));
+            this.year = Integer.parseInt((String) carFields.get("year"));
+            this.description = (String) carFields.get("desc");
+            this.price = Integer.parseInt((String) carFields.get("price"));
+            this.picture = (String) carFields.get("picPath");
+            this.date = new GregorianCalendar();
+            this.sold = false;
+            this.user = null;
+        }
+        if (carFields.size() == 2) {
+            this.id = (Integer) carFields.get("id");
+            this.sold = (Boolean) carFields.get("status");
+        }
+
     }
 
     public int getId() {
