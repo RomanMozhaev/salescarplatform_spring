@@ -1,9 +1,6 @@
 package ru.job4j.controller;
 
 import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.FileUploadException;
-import org.apache.commons.fileupload.disk.DiskFileItemFactory;
-import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -12,10 +9,7 @@ import org.codehaus.jackson.map.ObjectWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import ru.job4j.models.Car;
 import ru.job4j.models.JsonResponse;
@@ -26,13 +20,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
+/**
+ * the controller for requests tied to Car.
+ */
 @Controller
 @Component
 public class CarController {
@@ -42,19 +34,37 @@ public class CarController {
         this.service = service;
     }
 
+    /**
+     *  the service layer.
+     */
     private final ServiceInterface service;
 
+    /**
+     * Logger
+     */
     private static final Logger LOG = LogManager.getLogger(CarController.class.getName());
 
+    /**
+     * temp folder.
+     */
     private static final String REPOSITORY = System.getProperty("java.io.tmpdir");
 
-    ///ADDCAR servolet get addingPage.jsp
+    /**
+     * returns the page for the new car ticket form.
+     * @return adding page.
+     */
     @GetMapping(value = "/add")
     public String addingPage() {
         return "addingPage";
     }
 
-    //Add car servlet post
+    /**
+     * processes the adding a new car.
+     * @param jsonString - the json request with car ticket fields.
+     * @param session - HttpSession.
+     * @return - the json response.
+     * @throws IOException
+     */
     @PostMapping(value = "/add", consumes = "application/json", produces = "application/json")
     public @ResponseBody String addCar(@RequestBody String jsonString, HttpSession session) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
@@ -72,7 +82,12 @@ public class CarController {
         return resultJSON;
     }
 
-    //Change status
+    /**
+     * changes car ticket status.
+     * @param jsonString - the json request with car id and new status.
+     * @return - the json response.
+     * @throws IOException
+     */
     @PostMapping(value = "/change", consumes = "application/json", produces = "application/json")
     public @ResponseBody String changeStatus(@RequestBody String jsonString) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
@@ -88,7 +103,12 @@ public class CarController {
         return resultJSON;
     }
 
-    //down load servlet
+    /**
+     * downloads pictures.
+     * @param req - HttpServletRequest
+     * @param resp - HttpServletResponse
+     * @throws IOException
+     */
     @GetMapping(value = "/download")
     public void downLoadPicture(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String name = req.getParameter("pic");
@@ -101,7 +121,12 @@ public class CarController {
         }
     }
 
-    //upload servlet
+    /**
+     * uploads new pictures.
+     * @param pic - the picture parameter.
+     * @return the json response with the uploaded picture full path.
+     * @throws IOException
+     */
     @PostMapping(value = "/upload", consumes = "multipart/form-data", produces = "application/json")
     public @ResponseBody String uploadPicture(@RequestParam CommonsMultipartFile pic) throws IOException {
         String newFilePath = "";
@@ -130,7 +155,4 @@ public class CarController {
         String resultJSON = ow.writeValueAsString(new JsonResponse(newFilePath));
         return resultJSON;
     }
-
-
-
 }

@@ -1,5 +1,8 @@
 package ru.job4j.models;
 
+/**
+ * the class for json responses.
+ */
 public class JsonResponse {
 
     private String status;

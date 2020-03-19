@@ -8,14 +8,15 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import ru.job4j.models.Car;
-import ru.job4j.models.JsonResponse;
-import ru.job4j.models.User;
 import ru.job4j.service.ServiceInterface;
 
 import javax.servlet.http.HttpSession;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * the controller for table displaying.
+ */
 @Controller
 @Component
 public class TableViewController {
@@ -25,11 +26,20 @@ public class TableViewController {
         this.service = service;
     }
 
+    /**
+     * the service layer.
+     */
     private final ServiceInterface service;
 
     private static final Logger LOG = LogManager.getLogger(TableViewController.class.getName());
 
-    //start page servlet
+    /**
+     * returns the main page with the main table of car tickets.
+     * @param modelMap - the map for response. The method attaches cars list,
+     *                 name, filter attributes, cars brands list.
+     * @param session - HttpSession.
+     * @return table page.
+     */
     @GetMapping(value = "/")
     public String showStartingPage(ModelMap modelMap, HttpSession session) {
         String name = (String) session.getAttribute("name");
@@ -47,6 +57,14 @@ public class TableViewController {
         return "table";
     }
 
+    /**
+     * returns the main page with applying of the tickets filters.
+     * @param filter - the map with required filters.
+     * @param modelMap - the map for response.The method attaches cars list,
+     *                       name, filter attributes, cars brands list.
+     * @param session - HttpSession.
+     * @return table page.
+     */
     @GetMapping(value = "/filter")
     public String filter(@RequestParam Map<String, String> filter,
                          ModelMap modelMap, HttpSession session) {
@@ -70,6 +88,11 @@ public class TableViewController {
         return "table";
     }
 
+    /**
+     * the method for converting string to boolean
+     * @param bool true or false as String
+     * @return true or false as boolean.
+     */
     private boolean stringToBoolean(String bool) {
         boolean result = false;
         if (bool.equals("true")) {

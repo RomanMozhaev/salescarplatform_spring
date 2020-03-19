@@ -1,11 +1,13 @@
 package ru.job4j.persistent;
 
 import org.springframework.stereotype.Component;
+
 import ru.job4j.models.Car;
 import ru.job4j.models.User;
 
 import javax.persistence.*;
 import java.util.*;
+import java.util.function.Function;
 
 /**
  * the class for connecting to Data Base.
@@ -26,20 +28,11 @@ public class Connector implements ConnectionInterface {
      */
     @Override
     public int addUser(User user) {
-        int result = -1;
-        EntityManager em = emf.createEntityManager();
-        EntityTransaction tx = em.getTransaction();
-        try {
-            tx.begin();
+        Integer result = transaction(this.emf, em -> {
             em.persist(user);
-            tx.commit();
-            result = user.getId();
-        } catch (Exception e) {
-            tx.rollback();
-        } finally {
-            em.close();
-        }
-        return result;
+            return user.getId();
+        });
+        return result != null ? result : -1;
     }
 
     /**
@@ -50,22 +43,12 @@ public class Connector implements ConnectionInterface {
      */
     @Override
     public User isCredential(User user) {
-        EntityManager em = this.emf.createEntityManager();
-        EntityTransaction tx = em.getTransaction();
-        User foundUser = null;
-        try {
-            tx.begin();
-            Query q = em.createQuery("select u From User u where u.name like :userName and u.password like :userPassword");
+        return transaction(this.emf, em -> {
+            Query q = em.createNamedQuery("credential");
             q.setParameter("userName", user.getName());
             q.setParameter("userPassword", user.getPassword());
-            foundUser = (User) q.getSingleResult();
-            tx.commit();
-        } catch (Exception e) {
-            tx.rollback();
-        } finally {
-            em.close();
-        }
-        return foundUser;
+            return (User) q.getSingleResult();
+        });
     }
 
     /**
@@ -76,24 +59,14 @@ public class Connector implements ConnectionInterface {
      */
     @Override
     public boolean changeStatus(Car car) {
-        boolean result = false;
-        EntityManager em = emf.createEntityManager();
-        EntityTransaction tx = em.getTransaction();
-        try {
-            tx.begin();
-            Query q = em.createQuery("select c From Car c where c.id = :carId");
+        Object result = transaction(this.emf, em -> {
+            Query q = em.createNamedQuery("CarById");
             q.setParameter("carId", car.getId());
             Car foundCar = (Car) q.getSingleResult();
             foundCar.setSold(car.isSold());
-            em.merge(foundCar);
-            tx.commit();
-            result = true;
-        } catch (Exception e) {
-            tx.rollback();
-        } finally {
-            em.close();
-        }
-        return result;
+            return em.merge(foundCar);
+        });
+        return result != null;
     }
 
     /**
@@ -103,21 +76,12 @@ public class Connector implements ConnectionInterface {
      * @return true if added; otherwise false.
      */
     @Override
-    public int addCar(Car car) {
-        int result = -1;
-        EntityManager em = emf.createEntityManager();
-        EntityTransaction tx = em.getTransaction();
-        try {
-            tx.begin();
+    public boolean addCar(Car car) {
+        Object result = transaction(this.emf, em -> {
             em.persist(car);
-            tx.commit();
-            result = car.getId();
-        } catch (Exception e) {
-            tx.rollback();
-        } finally {
-            em.close();
-        }
-        return result;
+            return new Object();
+        });
+        return result != null;
     }
 
     /**
@@ -128,21 +92,11 @@ public class Connector implements ConnectionInterface {
      */
     @Override
     public List<Car> carsByUser(User user) {
-        EntityManager em = this.emf.createEntityManager();
-        EntityTransaction tx = em.getTransaction();
-        List<Car> cars = null;
-        try {
-            tx.begin();
-            Query q = em.createQuery("select c From Car c where c.user.id = :userId");
+        return transaction(this.emf, em -> {
+            Query q = em.createNamedQuery("CarsByUser");
             q.setParameter("userId", user.getId());
-            cars = q.getResultList();
-            tx.commit();
-        } catch (Exception e) {
-            tx.rollback();
-        } finally {
-            em.close();
-        }
-        return cars;
+            return q.getResultList();
+        });
     }
 
     /**
@@ -152,20 +106,10 @@ public class Connector implements ConnectionInterface {
      */
     @Override
     public List<Car> allCars() {
-        EntityManager em = this.emf.createEntityManager();
-        EntityTransaction tx = em.getTransaction();
-        List<Car> cars = null;
-        try {
-            tx.begin();
-            Query q = em.createQuery("select c From Car c");
-            cars = q.getResultList();
-            tx.commit();
-        } catch (Exception e) {
-            tx.rollback();
-        } finally {
-            em.close();
-        }
-        return cars;
+        return transaction(this.emf, em -> {
+            Query q = em.createNamedQuery("allCars");
+            return q.getResultList();
+        });
     }
 
     /**
@@ -175,81 +119,141 @@ public class Connector implements ConnectionInterface {
      */
     @Override
     public List<String> allBrands() {
-        EntityManager em = this.emf.createEntityManager();
-        EntityTransaction tx = em.getTransaction();
-        List<String> brands = null;
-        try {
-            tx.begin();
-            Query q = em.createQuery("select distinct c.brand From Car c");
-            brands = q.getResultList();
-            tx.commit();
-        } catch (Exception e) {
-            tx.rollback();
-        } finally {
-            em.close();
-        }
-        return brands;
+        return transaction(this.emf, em -> {
+            Query q = em.createNamedQuery("allBrands");
+            return q.getResultList();
+        });
     }
 
     /**
-     * returns the list of cars after filters terms.
+     * returns the cars which were filtered by brand, picture and day parameter.
      *
-     * @param day   - tickets for the current day only.
-     * @param photo - tickets with photos only.
-     * @param brand - tickets of the required car brand.
-     * @return the list of the cars.
+     * @param brand - the certain car brand
+     * @param day   - the latest day of car ticket publication
+     * @return the list of cars
      */
-    public List<Car> filter(boolean day, boolean photo, String brand) {
-        EntityManager em = this.emf.createEntityManager();
+    @Override
+    public List<Car> filterCarsByBrandPicDay(String brand, Calendar day) {
+        return transaction(this.emf, em -> {
+            Query q = em.createNamedQuery("Car_BrandPicDay");
+            q.setParameter("carBrand", brand);
+            q.setParameter("day", day);
+            return q.getResultList();
+        });
+    }
+
+    /**
+     * returns the cars which were filtered by picture and day parameter.
+     *
+     * @param day - the latest day of car ticket publication
+     * @return the list of cars
+     */
+    @Override
+    public List<Car> filterCarsByPicDay(Calendar day) {
+        return transaction(this.emf, em -> {
+            Query q = em.createNamedQuery("Car_PicDay");
+            q.setParameter("day", day);
+            return q.getResultList();
+        });
+    }
+
+    /**
+     * returns the cars which were filtered by brand and day parameter.
+     *
+     * @param brand - the certain car brand
+     * @param day   - the latest day of car ticket publication
+     * @return the list of cars
+     */
+    @Override
+    public List<Car> filterCarsByBrandDay(String brand, Calendar day) {
+        return transaction(this.emf, em -> {
+            Query q = em.createNamedQuery("Car_BrandDay");
+            q.setParameter("carBrand", brand);
+            q.setParameter("day", day);
+            return q.getResultList();
+        });
+    }
+
+    /**
+     * returns the cars which were filtered by day parameter.
+     *
+     * @param day - the latest day of car ticket publication
+     * @return the list of cars
+     */
+    @Override
+    public List<Car> filterCarsByDay(Calendar day) {
+        return transaction(this.emf, em -> {
+            Query q = em.createNamedQuery("Car_Day");
+            q.setParameter("day", day);
+            return q.getResultList();
+        });
+    }
+
+    /**
+     * returns the cars which were filtered by brand parameter.
+     *
+     * @param brand - the certain car brand
+     * @return the list of cars
+     */
+    @Override
+    public List<Car> filterCarsByBrandPic(String brand) {
+        return transaction(this.emf, em -> {
+            Query q = em.createNamedQuery("Car_BrandPic");
+            q.setParameter("carBrand", brand);
+            return q.getResultList();
+        });
+    }
+
+    /**
+     * returns the cars which were filtered by picture parameter.
+     * returns the car tickets only with pictures
+     *
+     * @return the list of cars
+     */
+    @Override
+    public List<Car> filterCarsByPic() {
+        return transaction(this.emf, em -> {
+            Query q = em.createNamedQuery("Car_Pic");
+            return q.getResultList();
+        });
+    }
+
+    /**
+     * returns the cars which were filtered by brand parameter.
+     *
+     * @param brand - the certain car brand
+     * @return the list of cars
+     */
+    @Override
+    public List<Car> filterCarsByBrand(String brand) {
+        return transaction(this.emf, em -> {
+            Query q = em.createNamedQuery("Car_Brand");
+            q.setParameter("carBrand", brand);
+            return q.getResultList();
+        });
+    }
+
+    /**
+     * the wrapper for methods, which return List of cars.
+     *
+     * @param factory   - Entity Manager factory.
+     * @param operation - unique operation for each method.
+     * @param <T>       - returning type.
+     * @return - result of the unique operation.
+     */
+    private <T> T transaction(EntityManagerFactory factory, Function<EntityManager, T> operation) {
+        EntityManager em = factory.createEntityManager();
         EntityTransaction tx = em.getTransaction();
-        List<Car> list = null;
         try {
             tx.begin();
-            StringBuilder query = new StringBuilder("select c From Car c");
-            boolean where = false;
-            if (!brand.equals("none")) {
-                query.append(" where c.brand =:carBrand");
-                where = true;
-            }
-            if (photo) {
-                if (where) {
-                    query.append(" and");
-                } else {
-                    query.append(" where");
-                    where = true;
-                }
-                query.append(" c.picture != ''");
-            }
-            if (day) {
-                if (where) {
-                    query.append(" and");
-                } else {
-                    query.append(" where");
-                }
-
-                query.append(" c.date >:today");
-            }
-
-            String qqq = query.toString();
-            Query q = em.createQuery(qqq);
-            if (!brand.equals("none")) {
-                q.setParameter("carBrand", brand);
-            }
-            if (day) {
-                Calendar now = new GregorianCalendar();
-                q.setParameter("today", new GregorianCalendar(
-                        now.get(Calendar.YEAR),
-                        now.get(Calendar.MONTH),
-                        now.get(Calendar.DATE)
-                ));
-            }
-            list = q.getResultList();
+            T result = operation.apply(em);
             tx.commit();
+            return result;
         } catch (Exception e) {
             tx.rollback();
         } finally {
             em.close();
         }
-        return list;
+        return null;
     }
 }
