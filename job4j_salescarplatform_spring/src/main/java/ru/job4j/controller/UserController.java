@@ -83,10 +83,8 @@ public class UserController {
         int id = operation.apply(user);
         String status = "invalid";
         if (id != -1) {
-            synchronized (session) {
-                session.setAttribute("name", user.getName());
-                session.setAttribute("id", id);
-            }
+            session.setAttribute("name", user.getName());
+            session.setAttribute("id", id);
             status = "valid";
         }
         ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
