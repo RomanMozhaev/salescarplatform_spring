@@ -21,8 +21,6 @@ import java.util.Properties;
 
 @Configuration
 @EnableTransactionManagement
-//@EnableJpaRepositories
-//@EnableJpaRepositories(basePackages = "ru.job4j")
 @EnableJpaRepositories(basePackages = "ru.job4j.persistent")
 public class SpringDataConfig {
 
@@ -31,14 +29,12 @@ public class SpringDataConfig {
         HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         vendorAdapter.setDatabase(Database.POSTGRESQL);
         vendorAdapter.setGenerateDdl(true);
-
         LocalContainerEntityManagerFactoryBean em
                 = new LocalContainerEntityManagerFactoryBean();
         em.setDataSource(dataSource());
         em.setPackagesToScan("ru.job4j.models");
         em.setJpaVendorAdapter(vendorAdapter);
         em.setJpaProperties(additionalProperties());
-
         return em;
     }
 
@@ -66,7 +62,8 @@ public class SpringDataConfig {
 
     private Properties additionalProperties() {
         Properties properties = new Properties();
-        properties.setProperty("hibernate.hbm2ddl.auto", "create-drop");
+//        properties.setProperty("hibernate.hbm2ddl.auto", "create");
+//        properties.setProperty("hibernate.hbm2ddl.auto", "create-drop");
         properties.setProperty("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
 //        properties.setProperty("hibernate.current_session_context_class", "thread");
 //        properties.setProperty("hibernate.jdbc.lob.non_contextual_creation", "true");

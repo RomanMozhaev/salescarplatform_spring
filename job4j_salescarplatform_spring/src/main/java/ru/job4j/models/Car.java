@@ -11,20 +11,6 @@ import java.util.Objects;
  */
 @Entity
 @Table(name = "car_tickets")
-@NamedQueries({
-        @NamedQuery(name = "allCars", query = "from Car"),
-        @NamedQuery(name = "carsByBrand", query = "from Car c where c.brand =:carBrand"),
-        @NamedQuery(name = "carsByPic", query = "from Car c where c.picture != ''"),
-        @NamedQuery(name = "carsByDay", query = "from Car c where c.date >:day"),
-        @NamedQuery(name = "carsByBrandPic", query = "from Car c where c.brand =:carBrand and c.picture != ''"),
-        @NamedQuery(name = "carsByBrandDay", query = "from Car c where c.brand =:carBrand and c.date >:day"),
-        @NamedQuery(name = "carsByPicDay", query = "from Car c where c.picture != '' and c.date >:day"),
-        @NamedQuery(name = "carsByBrandPicDay", query = "from Car c where c.brand =:carBrand and c.picture != '' and c.date >:day"),
-        @NamedQuery(name = "allBrands", query = "select distinct c.brand From Car c"),
-        @NamedQuery(name = "carsByUserId", query = "From Car c where c.user.id = :userId"),
-//        @NamedQuery(name = "CarById", query = "From Car c where c.id = :carId"),
-        @NamedQuery(name = "updateCarStatus", query = "update Car c set c.sold = :sold where c.id = :carId")
-})
 public class Car {
     /**
      * unique id.
