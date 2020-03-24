@@ -36,6 +36,7 @@ public class UserController {
 
     /**
      * returns the registration form for filling in the new user data.
+     *
      * @return registration form.
      */
     @GetMapping(value = "/registration")
@@ -45,18 +46,21 @@ public class UserController {
 
     /**
      * processes the adding of the new user to th data base.
+     *
      * @param jsonString - the json request with user data
-     * @param session HttpSession for adding user name and id.
+     * @param session    HttpSession for adding user name and id.
      * @return the json response.
      * @throws IOException
      */
     @PostMapping(value = "/registration", consumes = "application/json", produces = "application/json")
-    public @ResponseBody String register(@RequestBody String jsonString, HttpSession session) throws IOException {
+    public @ResponseBody
+    String register(@RequestBody String jsonString, HttpSession session) throws IOException {
         return commonWrapper(jsonString, session, this.service::addUser);
     }
 
     /**
      * returns the page for signing in.
+     *
      * @return sign in page
      */
     @GetMapping(value = "/signin")
@@ -67,13 +71,15 @@ public class UserController {
     /**
      * processes the checking of the user credential. If the user exists in the
      * data base, than sets name and id of the user to session.
+     *
      * @param jsonString - the json request
-     * @param session - HttpSession
+     * @param session    - HttpSession
      * @return - json response
      * @throws IOException
      */
     @PostMapping(value = "/signin", consumes = "application/json", produces = "application/json")
-    public @ResponseBody String checkCredential(@RequestBody String jsonString, HttpSession session) throws IOException {
+    public @ResponseBody
+    String checkCredential(@RequestBody String jsonString, HttpSession session) throws IOException {
         return commonWrapper(jsonString, session, this.service::isCredential);
     }
 
@@ -94,9 +100,10 @@ public class UserController {
 
     /**
      * loads the user cabinet page or forwards to the page for signing in.
+     *
      * @param modelMap - the map for response, the method attaches cars list
      *                 and user name to it.
-     * @param session - HttpSession
+     * @param session  - HttpSession
      * @return page for signing in or page of user cabinet.
      */
     @GetMapping(value = {"/login", "/cabinet"})
