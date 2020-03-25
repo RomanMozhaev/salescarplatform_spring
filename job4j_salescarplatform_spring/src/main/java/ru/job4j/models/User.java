@@ -6,7 +6,6 @@ import java.util.Set;
 
 @Entity
 @Table(name = "car_owners")
-@NamedQuery(name = "credential", query = "From User u where u.name like :userName and u.password like :userPassword")
 public class User {
     /**
      * unique id.
