@@ -35,7 +35,7 @@ public class CarController {
     }
 
     /**
-     *  the service layer.
+     * the service layer.
      */
     private final ServiceInterface service;
 
@@ -51,6 +51,7 @@ public class CarController {
 
     /**
      * returns the page for the new car ticket form.
+     *
      * @return adding page.
      */
     @GetMapping(value = "/add")
@@ -60,13 +61,15 @@ public class CarController {
 
     /**
      * processes the adding a new car.
+     *
      * @param jsonString - the json request with car ticket fields.
-     * @param session - HttpSession.
+     * @param session    - HttpSession.
      * @return - the json response.
      * @throws IOException
      */
     @PostMapping(value = "/add", consumes = "application/json", produces = "application/json")
-    public @ResponseBody String addCar(@RequestBody String jsonString, HttpSession session) throws IOException {
+    public @ResponseBody
+    String addCar(@RequestBody String jsonString, HttpSession session) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         Map<String, Object> carFields = objectMapper.readValue(jsonString, Map.class);
         Car car = new Car(carFields);
@@ -84,12 +87,14 @@ public class CarController {
 
     /**
      * changes car ticket status.
+     *
      * @param jsonString - the json request with car id and new status.
      * @return - the json response.
      * @throws IOException
      */
     @PostMapping(value = "/change", consumes = "application/json", produces = "application/json")
-    public @ResponseBody String changeStatus(@RequestBody String jsonString) throws IOException {
+    public @ResponseBody
+    String changeStatus(@RequestBody String jsonString) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         Map<String, Object> carFields = objectMapper.readValue(jsonString, Map.class);
         Car car = new Car(carFields);
@@ -105,7 +110,8 @@ public class CarController {
 
     /**
      * downloads pictures.
-     * @param req - HttpServletRequest
+     *
+     * @param req  - HttpServletRequest
      * @param resp - HttpServletResponse
      * @throws IOException
      */
@@ -123,12 +129,14 @@ public class CarController {
 
     /**
      * uploads new pictures.
+     *
      * @param pic - the picture parameter.
      * @return the json response with the uploaded picture full path.
      * @throws IOException
      */
     @PostMapping(value = "/upload", consumes = "multipart/form-data", produces = "application/json")
-    public @ResponseBody String uploadPicture(@RequestParam CommonsMultipartFile pic) throws IOException {
+    public @ResponseBody
+    String uploadPicture(@RequestParam CommonsMultipartFile pic) throws IOException {
         String newFilePath = "";
         File folder = new File(REPOSITORY + "/images");
         if (!folder.exists()) {

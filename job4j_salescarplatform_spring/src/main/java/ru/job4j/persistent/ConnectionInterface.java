@@ -16,8 +16,6 @@ public interface ConnectionInterface {
 
     List<Car> allCars();
 
-    User isCredential(User user);
-
     boolean changeStatus(Car car);
 
     List<String> allBrands();

@@ -43,22 +43,6 @@ public class Service implements ServiceInterface {
     }
 
     /**
-     * checks credentials of the user.
-     *
-     * @param user - the user.
-     * @return user's id or -1, if the user was not found.
-     */
-    @Override
-    public int isCredential(User user) {
-        int result = -1;
-        User foundUser = this.connector.isCredential(user);
-        if (foundUser != null) {
-            result = foundUser.getId();
-        }
-        return result;
-    }
-
-    /**
      * loads the offers which tied to the user.
      *
      * @param user - the user who added offers.

@@ -18,7 +18,11 @@
         function mainPage() {
             var url = "${pageContext.servletContext.contextPath}/";
             document.location.href = url;
+        }
 
+        function logout() {
+            var url = "${pageContext.servletContext.contextPath}/logout";
+            document.location.href = url;
         }
 
         function sold(status) {
@@ -62,7 +66,7 @@
 </head>
 <body>
 
-<h2>Hey <c:out value="${name}"></c:out>, that's your personal cabinet.</h2>
+<h2 style="text-align:center;">Hey <c:out value="${name}"></c:out>, that's your personal cabinet.</h2>
 <div class="container">
     <table id="buttons" class="table">
         <tr>
@@ -71,8 +75,9 @@
         <tr>
             <button class="form-control" onclick="mainPage()">Main Page</button>
         </tr>
-
-
+        <tr>
+            <button class="form-control" onclick="logout()">Logout</button>
+        </tr>
     </table>
 </div>
 <div class="container">

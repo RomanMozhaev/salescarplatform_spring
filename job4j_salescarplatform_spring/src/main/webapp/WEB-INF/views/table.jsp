@@ -15,8 +15,8 @@
             document.location.href = url;
         }
 
-        function login() {
-            var url = "${pageContext.servletContext.contextPath}/login";
+        function toCabinet() {
+            var url = "${pageContext.servletContext.contextPath}/cabinet";
             document.location.href = url;
         }
 
@@ -49,7 +49,7 @@
                 <button class="form-control" onclick="registration()">Registration</button>
             </td>
             <td width="50%">
-                <button class="form-control" onclick="login()"><c:out value="${name}"></c:out></button>
+                <button class="form-control" onclick="toCabinet()"><c:out value="${title}"></c:out></button>
             </td>
         </tr>
     </table>

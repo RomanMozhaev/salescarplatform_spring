@@ -35,21 +35,25 @@ public class TableViewController {
 
     /**
      * returns the main page with the main table of car tickets.
+     *
      * @param modelMap - the map for response. The method attaches cars list,
      *                 name, filter attributes, cars brands list.
-     * @param session - HttpSession.
+     * @param session  - HttpSession.
      * @return table page.
      */
     @GetMapping(value = "/")
     public String showStartingPage(ModelMap modelMap, HttpSession session) {
         String name = (String) session.getAttribute("name");
+        String title;
         if (name == null) {
-            name = "Log In";
+            title = "Log In";
+        } else {
+            title = name + ", your personal cabinet";
         }
         List<Car> list = this.service.loadTable();
         List<String> brands = this.service.allBrands();
         modelMap.addAttribute("list", list);
-        modelMap.addAttribute("name", name);
+        modelMap.addAttribute("title", title);
         modelMap.addAttribute("day", false);
         modelMap.addAttribute("photo", false);
         modelMap.addAttribute("setBrand", "none");
@@ -59,18 +63,22 @@ public class TableViewController {
 
     /**
      * returns the main page with applying of the tickets filters.
-     * @param filter - the map with required filters.
+     *
+     * @param filter   - the map with required filters.
      * @param modelMap - the map for response.The method attaches cars list,
-     *                       name, filter attributes, cars brands list.
-     * @param session - HttpSession.
+     *                 name, filter attributes, cars brands list.
+     * @param session  - HttpSession.
      * @return table page.
      */
     @GetMapping(value = "/filter")
     public String filter(@RequestParam Map<String, String> filter,
                          ModelMap modelMap, HttpSession session) {
         String name = (String) session.getAttribute("name");
+        String title;
         if (name == null) {
-            name = "Log In";
+            title = "Log In";
+        } else {
+            title = name + ", your personal cabinet";
         }
         String day = filter.get("day");
         String photo = filter.get("photo");
@@ -80,7 +88,7 @@ public class TableViewController {
         List<Car> list = this.service.filter(dayBool, photoBool, brand);
         List<String> brands = this.service.allBrands();
         modelMap.addAttribute("list", list);
-        modelMap.addAttribute("name", name);
+        modelMap.addAttribute("title", title);
         modelMap.addAttribute("day", day);
         modelMap.addAttribute("photo", photo);
         modelMap.addAttribute("setBrand", brand);
@@ -90,6 +98,7 @@ public class TableViewController {
 
     /**
      * the method for converting string to boolean
+     *
      * @param bool true or false as String
      * @return true or false as boolean.
      */

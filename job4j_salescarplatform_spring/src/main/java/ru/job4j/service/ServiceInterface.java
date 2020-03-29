@@ -9,8 +9,6 @@ public interface ServiceInterface {
 
     List<Car> loadTable();
 
-    int isCredential(User user);
-
     List<Car> loadByUser(User user);
 
     List<Car> filter(boolean day, boolean photo, String model);

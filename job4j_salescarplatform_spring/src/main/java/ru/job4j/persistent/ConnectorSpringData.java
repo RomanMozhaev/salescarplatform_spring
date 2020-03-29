@@ -1,8 +1,11 @@
 package ru.job4j.persistent;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import ru.job4j.controller.TableViewController;
 import ru.job4j.models.Car;
 import ru.job4j.models.User;
 
@@ -14,6 +17,8 @@ import java.util.List;
  */
 @Component
 public class ConnectorSpringData implements ConnectionInterface {
+
+    private static final Logger LOG = LogManager.getLogger(TableViewController.class.getName());
 
     /**
      * the repository for User model.
@@ -41,7 +46,12 @@ public class ConnectorSpringData implements ConnectionInterface {
     @Transactional
     @Override
     public int addUser(User user) {
-        return userAppRepository.save(user).getId();
+        int id = -1;
+        User user1 = this.userAppRepository.findByUsername(user.getUsername());
+        if (user1 == null) {
+            id = this.userAppRepository.save(user).getId();
+        }
+        return id;
     }
 
     /**
@@ -76,17 +86,6 @@ public class ConnectorSpringData implements ConnectionInterface {
     @Override
     public List<Car> allCars() {
         return carAppRepository.allCars();
-    }
-
-    /**
-     * checks the credential for the sign in
-     *
-     * @param user - includes name and password for checking.
-     * @return - User if found; otherwise null.
-     */
-    @Override
-    public User isCredential(User user) {
-        return userAppRepository.isCredential(user.getName(), user.getPassword());
     }
 
     /**

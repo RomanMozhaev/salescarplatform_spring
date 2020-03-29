@@ -25,7 +25,7 @@
                 alert("Please enter: " + massage);
             } else {
                 var user = {
-                    name: name,
+                    username: name,
                     password: pass
                 };
                 response(user);
@@ -48,7 +48,8 @@
         }
         function resultProcessing($data) {
             if ($data['status'] === 'valid') {
-                var url = "${pageContext.servletContext.contextPath}/login";
+                alert("The user was registered successfully.");
+                var url = "${pageContext.servletContext.contextPath}/";
                 document.location.href = url;
             } else {
                 alert("The user with this name exists on the server. Please choose other name.");
@@ -58,6 +59,7 @@
     </script>
 </head>
 <body>
+<h1 style="text-align:center;">Registration</h1>
 <form name="dataForm" class="container">
     <div>
         <label for="name">Name: </label>
