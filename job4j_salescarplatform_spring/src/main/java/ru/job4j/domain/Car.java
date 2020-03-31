@@ -1,4 +1,4 @@
-package ru.job4j.models;
+package ru.job4j.domain;
 
 import javax.persistence.*;
 import java.util.Calendar;
@@ -76,20 +76,6 @@ public class Car {
     private User user;
 
     public Car() {
-    }
-
-    public Car(String type, String brand, String model, int usage, int year, String description, long price) {
-        this.type = type;
-        this.brand = brand;
-        this.model = model;
-        this.usage = usage;
-        this.year = year;
-        this.description = description;
-        this.price = price;
-        this.picture = "";
-        this.date = new GregorianCalendar();
-        this.sold = false;
-        this.user = null;
     }
 
     public Car(Map<String, Object> carFields) {

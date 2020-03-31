@@ -1,4 +1,4 @@
-package ru.job4j.controller;
+package ru.job4j.web;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.logging.log4j.LogManager;
@@ -7,13 +7,12 @@ import org.apache.logging.log4j.Logger;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.ObjectWriter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
-import ru.job4j.models.Car;
-import ru.job4j.models.JsonResponse;
-import ru.job4j.models.User;
+import ru.job4j.domain.Car;
+import ru.job4j.domain.JsonResponse;
+import ru.job4j.domain.User;
 import ru.job4j.service.ServiceInterface;
 
 import javax.servlet.http.HttpServletRequest;
@@ -26,7 +25,6 @@ import java.util.Map;
  * the controller for requests tied to Car.
  */
 @Controller
-@Component
 public class CarController {
 
     @Autowired

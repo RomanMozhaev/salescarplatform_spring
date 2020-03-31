@@ -1,12 +1,12 @@
-package ru.job4j.config;
+package ru.job4j.web;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import ru.job4j.models.User;
-import ru.job4j.persistent.UserRepository;
+import ru.job4j.domain.User;
+import ru.job4j.repository.UserRepository;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {

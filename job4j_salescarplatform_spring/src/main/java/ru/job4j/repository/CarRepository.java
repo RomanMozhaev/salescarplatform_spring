@@ -1,11 +1,11 @@
-package ru.job4j.persistent;
+package ru.job4j.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import ru.job4j.models.Car;
+import ru.job4j.domain.Car;
 
 import java.util.Calendar;
 import java.util.List;

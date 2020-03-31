@@ -1,11 +1,10 @@
 package ru.job4j.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
-import ru.job4j.persistent.ConnectionInterface;
-import ru.job4j.models.Car;
-import ru.job4j.models.User;
+import org.springframework.stereotype.Service;
+import ru.job4j.repository.ConnectionInterface;
+import ru.job4j.domain.Car;
+import ru.job4j.domain.User;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -15,8 +14,8 @@ import java.util.List;
 /**
  * the class for preparing data for processing with data base.
  */
-@Component
-public class Service implements ServiceInterface {
+@Service
+public class ServiceImpl implements ServiceInterface {
 
     /**
      * the connector to data base class instance.
@@ -24,7 +23,7 @@ public class Service implements ServiceInterface {
     private final ConnectionInterface connector;
 
     @Autowired
-    public Service(final ConnectionInterface connector) {
+    public ServiceImpl(final ConnectionInterface connector) {
         this.connector = connector;
     }
 

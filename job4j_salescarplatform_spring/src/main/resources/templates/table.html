@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Cars</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script>
+        function registration() {
+            var url = "./registration";
+            document.location.href = url;
+        }
+
+        function toCabinet() {
+            var url = "./cabinet";
+            document.location.href = url;
+        }
+
+        function sold(status) {
+            var result;
+            if (status) {
+                result = "Sold";
+            } else {
+                result = "Open";
+            }
+            return result;
+        }
+
+        function filter() {
+            var day = document.getElementById("day").checked;
+            var photo = document.getElementById("photo").checked;
+            var brand = document.getElementById("brand").value;
+            var url = "./filter" + "?day="
+                + day + "&photo=" + photo + "&brand=" + brand;
+            document.location.href = url;
+        }
+    </script>
+</head>
+<body>
+<div class="container">
+    <table id="head" class="table">
+        <tr>
+            <td width="50%">
+                <button class="form-control" onclick="registration()">Registration</button>
+            </td>
+            <td width="50%">
+                <button class="form-control" onclick="toCabinet()">
+                    <span th:text="${title}">title</span>
+                </button>
+            </td>
+        </tr>
+    </table>
+
+    <table id="filter" class="table">
+        <tr>
+            <div>
+                <label for="day">Last Day: </label>
+                <input type="checkbox" id="day" name="day" value="day" th:checked="${day}">
+            </div>
+        </tr>
+        <tr>
+            <div>
+                <label for="photo">With Photo only: </label>
+                <input type="checkbox" id="photo" name="photo" value="photo" th:checked="${photo}">
+            </div>
+        </tr>
+        <tr>
+            <div>
+                <select name="brand" class="form-control" id="brand">
+                    <option value="none">--</option>
+                    <option th:each="brand : ${brands}"
+                            th:value="${brand}" th:text="${brand}" th:selected="${brand==setBrand}">
+                    </option>
+                </select>
+            </div>
+        </tr>
+        <tr>
+            <button class="form-control" onclick="filter()">Apply Filters</button>
+        </tr>
+
+    </table>
+</div>
+<table>
+    <div class="container">
+        <table id="table" class="table">
+            <tr th:each="car: ${list}">
+                <td width="250px">
+                    <form>
+                        <a th:href="@{/download(pic=${car.picture})}">
+                            <img th:src="@{/download(pic=${car.picture})}"
+                                 width="200px" height="200px"/>
+                        </a>
+                    </form>
+                </td>
+                <td>
+                    <p>Status:
+                    <script type='text/javascript' th:inline="javascript">
+                        document.write(sold([[${car.sold}]]));
+                    </script>
+                    </p>
+                    <p>Price: <span th:text="${car.price}">car price</span></p>
+                    <p>Type: <span th:text="${car.type}">car type</span></p>
+                    <p>Brand: <span th:text="${car.brand}">car brand</span></p>
+                    <p>Model: <span th:text="${car.model}">car model</span></p>
+                    <p>Year: <span th:text="${car.year}">car year</span></p>
+                    <p>Usage of vehicle: <span th:text="${car.usage}">car usage</span></p>
+                    <p>Description: <span th:text="${car.description}">car description</span></p>
+                </td>
+            </tr>
+        </table>
+    </div>
+</table>
+</body>
+</html>

@@ -1,7 +1,7 @@
 package ru.job4j.service;
 
-import ru.job4j.models.Car;
-import ru.job4j.models.User;
+import ru.job4j.domain.Car;
+import ru.job4j.domain.User;
 
 import java.util.List;
 

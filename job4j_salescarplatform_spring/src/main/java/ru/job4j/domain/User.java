@@ -1,4 +1,4 @@
-package ru.job4j.models;
+package ru.job4j.domain;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

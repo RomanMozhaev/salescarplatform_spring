@@ -1,13 +1,12 @@
-package ru.job4j.controller;
+package ru.job4j.web;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
-import ru.job4j.models.Car;
+import ru.job4j.domain.Car;
 import ru.job4j.service.ServiceInterface;
 
 import javax.servlet.http.HttpSession;
@@ -18,7 +17,6 @@ import java.util.Map;
  * the controller for table displaying.
  */
 @Controller
-@Component
 public class TableViewController {
 
     @Autowired
@@ -36,13 +34,13 @@ public class TableViewController {
     /**
      * returns the main page with the main table of car tickets.
      *
-     * @param modelMap - the map for response. The method attaches cars list,
-     *                 name, filter attributes, cars brands list.
-     * @param session  - HttpSession.
+     * @param model   - the map for response. The method attaches cars list,
+     *                name, filter attributes, cars brands list.
+     * @param session - HttpSession.
      * @return table page.
      */
     @GetMapping(value = "/")
-    public String showStartingPage(ModelMap modelMap, HttpSession session) {
+    public String showStartingPage(ModelMap model, HttpSession session) {
         String name = (String) session.getAttribute("name");
         String title;
         if (name == null) {
@@ -52,12 +50,12 @@ public class TableViewController {
         }
         List<Car> list = this.service.loadTable();
         List<String> brands = this.service.allBrands();
-        modelMap.addAttribute("list", list);
-        modelMap.addAttribute("title", title);
-        modelMap.addAttribute("day", false);
-        modelMap.addAttribute("photo", false);
-        modelMap.addAttribute("setBrand", "none");
-        modelMap.addAttribute("brands", brands);
+        model.addAttribute("list", list);
+        model.addAttribute("title", title);
+        model.addAttribute("day", false);
+        model.addAttribute("photo", false);
+        model.addAttribute("setBrand", "none");
+        model.addAttribute("brands", brands);
         return "table";
     }
 

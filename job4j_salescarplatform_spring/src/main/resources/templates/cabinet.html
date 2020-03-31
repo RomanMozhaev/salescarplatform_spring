@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <title>User Cabinet</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script>
+        function newOffer() {
+            var url = "./add";
+            document.location.href = url;
+        }
+
+        function mainPage() {
+            var url = "./";
+            document.location.href = url;
+        }
+
+        function logout() {
+            var url = "./logout";
+            document.location.href = url;
+        }
+
+        function changeStatus(id) {
+            var status = document.getElementById(id + "_cb").checked;
+            var changes = {
+                id: id,
+                status: status,
+            };
+            var url = "./change";
+            $.ajax({
+                type: "POST",
+                url: url,
+                contentType: 'application/json',
+                success: [function ($data) {
+                    if ($data['status'] === "valid") {
+                        if (status) {
+                            document.getElementById(id + "_div").innerHTML = "<p>Status: Sold</p>";
+                        } else {
+                            document.getElementById(id + "_div").innerHTML = "<p>Status: Open</p>";
+                        }
+                    }
+                }],
+
+                data: JSON.stringify(changes),
+                dataType: 'json'
+            });
+            return false;
+        }
+    </script>
+
+</head>
+<body>
+<h2 style="text-align:center;">
+    Hey <span th:text="${name}">User</span>, that's your personal cabinet.
+</h2>
+<div class="container">
+    <table id="buttons" class="table">
+        <tr>
+            <button class="form-control" onclick="newOffer()">Add An New Offer For Sale</button>
+        </tr>
+        <tr>
+            <button class="form-control" onclick="mainPage()">Main Page</button>
+        </tr>
+        <tr>
+            <button class="form-control" onclick="logout()">Logout</button>
+        </tr>
+    </table>
+</div>
+<div class="container">
+    <table id="table" class="table">
+        <tr th:each="car: ${list}">
+            <td width="250px">
+                <form>
+                    <a th:href="@{/download(pic=${car.picture})}">
+                        <img th:src="@{/download(pic=${car.picture})}"
+                             width="200px" height="200px"/>
+                    </a>
+                </form>
+            </td>
+            <td>
+                <div th:id="${car.id}+ '_div'">
+                    <p th:text="${car.sold} ? 'Status: Sold' : 'Status: Open'"></p>
+                </div>
+                <p>Price: <span th:text="${car.price}">car price</span></p>
+                <p>Type: <span th:text="${car.type}">car type</span></p>
+                <p>Brand: <span th:text="${car.brand}">car brand</span></p>
+                <p>Model: <span th:text="${car.model}">car model</span></p>
+                <p>Year: <span th:text="${car.year}">car year</span></p>
+                <p>Usage of vehicle: <span th:text="${car.usage}">car usage</span></p>
+                <p>Description: <span th:text="${car.description}">car description</span></p>
+            </td>
+            <td>
+                <input type="checkbox" th:id="${car.id}+ '_cb'"
+                       th:onchange="'javascript:changeStatus(' + ${car.id} + ')'"
+                       th:checked="${car.sold}">
+            </td>
+        </tr>
+    </table>
+</div>
+</table>
+</body>
+</html>
