@@ -1,15 +1,13 @@
 package ru.job4j.web;
 
-import org.apache.commons.fileupload.FileItem;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.ObjectWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
 import ru.job4j.domain.Car;
 import ru.job4j.domain.JsonResponse;
 import ru.job4j.domain.User;
@@ -68,18 +66,14 @@ public class CarController {
     @PostMapping(value = "/add", consumes = "application/json", produces = "application/json")
     public @ResponseBody
     String addCar(@RequestBody String jsonString, HttpSession session) throws IOException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        Map<String, Object> carFields = objectMapper.readValue(jsonString, Map.class);
+        ObjectMapper mapper = new ObjectMapper();
+        Map<String, Object> carFields = mapper.readValue(jsonString, Map.class);
         Car car = new Car(carFields);
         int userId = (Integer) session.getAttribute("id");
         car.setUser(new User(userId));
-        boolean result = this.service.addCar(car);
-        String status = "invalid";
-        if (result) {
-            status = "valid";
-        }
-        ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
-        String resultJSON = ow.writeValueAsString(new JsonResponse(status));
+        this.service.addCar(car);
+        String status = "valid";
+        String resultJSON = mapper.writeValueAsString(new JsonResponse(status));
         return resultJSON;
     }
 
@@ -93,16 +87,15 @@ public class CarController {
     @PostMapping(value = "/change", consumes = "application/json", produces = "application/json")
     public @ResponseBody
     String changeStatus(@RequestBody String jsonString) throws IOException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        Map<String, Object> carFields = objectMapper.readValue(jsonString, Map.class);
+        ObjectMapper mapper = new ObjectMapper();
+        Map<String, Object> carFields = mapper.readValue(jsonString, Map.class);
         Car car = new Car(carFields);
         boolean result = this.service.changeStatus(car);
         String status = "invalid";
         if (result) {
             status = "valid";
         }
-        ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
-        String resultJSON = ow.writeValueAsString(new JsonResponse(status));
+        String resultJSON = mapper.writeValueAsString(new JsonResponse(status));
         return resultJSON;
     }
 
@@ -116,7 +109,6 @@ public class CarController {
     @GetMapping(value = "/download")
     public void downLoadPicture(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String name = req.getParameter("pic");
-        resp.setContentType("name=" + name);
         resp.setContentType("image/png");
         resp.setHeader("Content-Disposition", "attachment; filename=\"" + name + "\"");
         File file = new File(name);
@@ -134,31 +126,30 @@ public class CarController {
      */
     @PostMapping(value = "/upload", consumes = "multipart/form-data", produces = "application/json")
     public @ResponseBody
-    String uploadPicture(@RequestParam CommonsMultipartFile pic) throws IOException {
+    String uploadPicture(@RequestParam MultipartFile pic) throws IOException {
         String newFilePath = "";
         File folder = new File(REPOSITORY + "/images");
         if (!folder.exists()) {
             folder.mkdir();
         }
         if (pic != null) {
-            FileItem picture = pic.getFileItem();
-            String filePath = folder + File.separator + picture.getName();
+            String filePath = folder + File.separator + pic.getOriginalFilename();
             int i = 0;
             newFilePath = filePath;
             File file = new File(newFilePath);
             while (file.exists()) {
                 i++;
-                newFilePath = folder + File.separator + i + "_" + picture.getName();
+                newFilePath = folder + File.separator + i + "_" + pic.getOriginalFilename();
                 file = new File(newFilePath);
             }
             try (FileOutputStream out = new FileOutputStream(file)) {
-                out.write(picture.getInputStream().readAllBytes());
+                out.write(pic.getInputStream().readAllBytes());
             } catch (IOException e) {
                 LOG.error(e.getMessage(), e);
             }
         }
-        ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
-        String resultJSON = ow.writeValueAsString(new JsonResponse(newFilePath));
+        ObjectMapper mapper = new ObjectMapper();
+        String resultJSON = mapper.writeValueAsString(new JsonResponse(newFilePath));
         return resultJSON;
     }
 }

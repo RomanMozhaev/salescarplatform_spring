@@ -27,7 +27,7 @@
                 || price === "") {
                 alert("Please, fill all fields in.");
             } else {
-                var user = {
+                var car = {
                     type: type,
                     brand: brand,
                     model: model,
@@ -40,23 +40,23 @@
                 if (pic !== undefined) {
                     var formData = new FormData();
                     formData.append("pic", pic);
-                    loadPicture(formData, user);
+                    loadPicture(formData, car);
                 } else {
-                    response(user);
+                    response(car);
                 }
             }
             return false;
         }
 
-        function loadPicture(formData, user) {
+        function loadPicture(formData, car) {
             var url = "./upload";
             $.ajax({
                 type: "post",
                 url: url,
                 data: formData,
                 success: [function ($data) {
-                    user['picPath'] = $data['status'];
-                    response(user);
+                    car['picPath'] = $data['status'];
+                    response(car);
                 }],
                 contentType: false,
                 processData: false,
@@ -64,13 +64,13 @@
             });
         }
 
-        function response(user) {
+        function response(car) {
             var url = "./add";
             $.ajax({
                 type: "POST",
                 url: url,
                 contentType: 'application/json',
-                data: JSON.stringify(user),
+                data: JSON.stringify(car),
                 success: [function ($data) {
                     resultProcessing($data);
                 }],

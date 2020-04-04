@@ -1,7 +1,6 @@
 package ru.job4j.web;
 
 import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.ObjectWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -64,8 +63,7 @@ public class UserController {
         if (id != -1) {
             status = "valid";
         }
-        ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
-        String resultJSON = ow.writeValueAsString(new JsonResponse(status));
+        String resultJSON = objectMapper.writeValueAsString(new JsonResponse(status));
         return resultJSON;
     }
 
