@@ -1,6 +1,3 @@
--- CREATE TABLE halls (hall_id int not null , row int not null, place int not null, account_id int, primary key (hall_id, row, place), foreign key (account_id) REFERENCES accounts (account_id));
--- CREATE TABLE accounts (account_id serial primary key, name varchar(200) not null , phone int not null);
-
 CREATE TABLE car_owners
 (
     id integer NOT NULL,
@@ -26,3 +23,5 @@ CREATE TABLE car_tickets
     PRIMARY KEY (id),
     FOREIGN KEY (user_id) REFERENCES car_owners (id)
 );
+
+CREATE SEQUENCE hibernate_sequence;
