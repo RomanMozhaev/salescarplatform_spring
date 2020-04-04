@@ -9,7 +9,7 @@ CREATE TABLE car_owners
     PRIMARY KEY (id)
 );
 
-CREATE TABLE public.car_tickets
+CREATE TABLE car_tickets
 (
     id integer NOT NULL,
     brand character varying(255) NOT NULL,
