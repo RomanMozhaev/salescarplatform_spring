@@ -23,6 +23,7 @@ import ru.job4j.repository.UserRepository;
 import ru.job4j.service.ServiceInterface;
 
 import java.io.File;
+import java.nio.file.Path;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.BDDMockito.given;
@@ -118,6 +119,7 @@ public class CarControllerTest {
         ObjectMapper mapper = new ObjectMapper();
         File picture = new File(PIC_PATH);
         byte[] byteArray = Files.toByteArray(picture);
+        Path path = Path.of(REPOSITORY, "images", PIC_NAME);
         String filePath = REPOSITORY + "images" + File.separator + PIC_NAME;
         MockMultipartFile mockMultipartFile = new MockMultipartFile(
                 "pic", PIC_NAME,
@@ -128,8 +130,7 @@ public class CarControllerTest {
                 .contentType(MediaType.MULTIPART_FORM_DATA))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(content().string(mapper.writeValueAsString(new JsonResponse(filePath))));
-        File picForDelete = new File(filePath);
-        picForDelete.delete();
+        path.toFile().delete();
     }
 
 
