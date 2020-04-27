@@ -1,11 +1,8 @@
 package ru.job4j.repository;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import ru.job4j.web.TableViewController;
 import ru.job4j.domain.Car;
 import ru.job4j.domain.User;
 
@@ -17,8 +14,6 @@ import java.util.List;
  */
 @Component
 public class ConnectorSpringData implements ConnectionInterface {
-
-    private static final Logger LOG = LogManager.getLogger(TableViewController.class.getName());
 
     /**
      * the repository for User model.
