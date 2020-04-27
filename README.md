@@ -13,10 +13,10 @@ The object-relational database: PostgreSQL.
 The main page of the web-application presents the list of the offers for car sale.
 The user may apply different filters to the list (filter by model, offer for today,
 with pictures only).
-![main page](https://github.com/RomanMozhaev/salescarplatform_spring/blob/master/job4j_salescarplatform_spring/raw/main_page.png)
+![main page](https://github.com/RomanMozhaev/salescarplatform_spring/blob/master/raw/main_page.png)
 Each user may get the access for adding a new offer after registration.
 After registration the user may open own personal cabinet, where can find 
 the interface to manage own offers for sale.
-![personal cabinet](https://github.com/RomanMozhaev/salescarplatform_spring/blob/master/job4j_salescarplatform_spring/raw/peronal_cabinet.png)
+![personal cabinet](https://github.com/RomanMozhaev/salescarplatform_spring/blob/master/raw/peronal_cabinet.png)
 
   
