@@ -120,7 +120,6 @@ public class CarControllerTest {
         File picture = new File(PIC_PATH);
         byte[] byteArray = Files.toByteArray(picture);
         Path path = Path.of(REPOSITORY, "images", PIC_NAME);
-        String filePath = REPOSITORY + "images" + File.separator + PIC_NAME;
         MockMultipartFile mockMultipartFile = new MockMultipartFile(
                 "pic", PIC_NAME,
                 "multipart/form-data", byteArray);
@@ -129,7 +128,7 @@ public class CarControllerTest {
                 .file(mockMultipartFile)
                 .contentType(MediaType.MULTIPART_FORM_DATA))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(content().string(mapper.writeValueAsString(new JsonResponse(filePath))));
+                .andExpect(content().string(mapper.writeValueAsString(new JsonResponse(path.toString()))));
         path.toFile().delete();
     }
 
